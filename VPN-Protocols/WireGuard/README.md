@@ -97,7 +97,7 @@ ListenPort = 51820
 PublicKey = <客户端的公钥>
 AllowedIPs = 10.0.0.2/32
 ```
-配置完成后，使用 sudo wg-quick up wg0 启动接口，并用 sudo systemctl enable wg-quick@wg0 设置开机自启。
+配置完成后，使用 **sudo wg-quick up wg0** 启动接口，并用 **sudo systemctl enable wg-quick@wg0** 设置开机自启。
 
 #### 第四步：客户端配置 (劫持默认路由)
 要让客户端的“所有流量”都走 VPN，关键在于客户端的配置。
