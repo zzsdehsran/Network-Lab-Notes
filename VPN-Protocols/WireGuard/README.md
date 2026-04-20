@@ -4,11 +4,12 @@
 
 #### 节点 A（Client）: Ubuntu 24.04 (Noble Numbat) / Windows 11，位于用户家中。
 
-#### 节点 B（Sever）: Red Hat Enterprise Linux 9.3, 位于企业内网环境。
+#### 节点 B（Sever）:  Red Hat Enterprise Linux 9.3, 位于企业内网环境。
 
 ### 🌈 网络拓扑架构
 
-WireGuard Server --> Core SW --> 深信服AC --> FortiGate 100F --> 出口
+*WireGuard Server --> Core SW --> 深信服AC --> FortiGate 100F --> 出口*
+
 ```mermaid
 flowchart TD
     %% 定义全局样式
@@ -99,6 +100,7 @@ flowchart TD
     Core ==> Agg34
 ```
 ### 一、WireGuard Server 基础配置
+
 #### 1、安装EPEL仓库
 ```bash
 # 1. 启用 EPEL 仓库
@@ -206,9 +208,10 @@ AllowedIPs = 0.0.0.0/0
 PersistentKeepalive = 25
 ```
 
-#### 第五步：测试连通性
+#### 第五步：测试连通性并与L2TP over IPsec进行对比：
+
+<img width="2560" height="1019" alt="4666d48aec4aa178c584707d42fc439e" src="https://github.com/user-attachments/assets/cc5c960d-a51c-41c2-bf6c-5f0ce5a51e0a" />
+<img width="2560" height="1380" alt="f4ae4200c70ac427bb6e3811d37de8d4" src="https://github.com/user-attachments/assets/9f4ba5bb-6582-4346-bb79-0ebeca394d67" />
 
 
 
-
-自动化: Python (Netmiko, Paramiko, Requests)
