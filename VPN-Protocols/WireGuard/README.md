@@ -28,8 +28,10 @@ flowchart TD
         BM[上网行为管理]
     end
 
+    %% 修正：精准还原多 WAN 口链路走向
     Net1 -.->|WAN - 链路故障| LB
-    Net2 ==>|WAN 1 / WAN 2| FW
+    Net2 ==>|WAN 1| FW
+    Net2 ==>|WAN 2-5| BM
     FW ==>|LAN 1| BM
 
     %% 核心层
@@ -41,7 +43,7 @@ flowchart TD
     end
 
     LB ==> Core
-    BM ==> Core
+    BM ==>|LAN 1| Core
 
     %% 汇聚与接入层 (按楼层划分)
     %% 3F
