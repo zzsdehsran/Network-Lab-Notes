@@ -9,8 +9,93 @@
 ### 🌈 网络拓扑架构
 
 WireGuard Server --> Core SW --> 深信服AC --> FortiGate 100F --> 出口
+```mermaid
+flowchart TD
+    %% 定义全局样式
+    classDef cloud fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef firewall fill:#ffcccc,stroke:#e53935,stroke-width:2px;
+    classDef core fill:#ffe0b2,stroke:#fb8c00,stroke-width:2px;
+    classDef access fill:#e1f5fe,stroke:#039be5,stroke-width:1px;
 
+    %% 互联网接入层
+    Net1((Internet)):::cloud
+    Net2((Internet)):::cloud
 
+    %% 边界与安全层
+    subgraph Edge [边界与安全层]
+        LB[负载均衡集群]
+        FW[Fortinet 防火墙]:::firewall
+        BM[上网行为管理]
+    end
+
+    Net1 -.->|WAN - 链路故障| LB
+    Net2 ==>|WAN 1 / WAN 2| FW
+    FW ==>|LAN 1| BM
+
+    %% 核心层
+    subgraph CoreZone [核心层]
+        direction LR
+        Server[(Servers)]
+        Core[核心交换机 CSS 集群]:::core
+        Server --- Core
+    end
+
+    LB ==> Core
+    BM ==> Core
+
+    %% 汇聚与接入层 (按楼层划分)
+    %% 3F
+    subgraph F3 [3F]
+        AC3[AC] -.- Agg3[汇聚交换机]
+        Agg3 --> Acc3_1[接入交换机]:::access
+        Agg3 --> Acc3_2[接入交换机]:::access
+        Acc3_1 --> AP3((无线 AP))
+        Acc3_2 --> PC3[终端 PC]
+    end
+
+    %% 16F
+    subgraph F16 [16F]
+        Agg16[汇聚交换机]
+        Agg16 --> Acc16_1[接入交换机]:::access
+        Agg16 --> Acc16_2[接入交换机]:::access
+        Acc16_1 --> AP16((无线 AP))
+        Acc16_2 --> PC16[终端 PC]
+    end
+
+    %% 17F
+    subgraph F17 [17F]
+        NAC17[NAC] -.- Agg17[汇聚交换机]
+        Agg17 --> Acc17_1[接入交换机]:::access
+        Agg17 --> Acc17_2[接入交换机]:::access
+        Acc17_1 --> AP17((无线 AP))
+        Acc17_2 --> PC17[终端 PC]
+    end
+
+    %% 33F
+    subgraph F33 [33F]
+        Agg33[汇聚交换机]
+        Agg33 --> Acc33_1[接入交换机]:::access
+        Agg33 --> Acc33_2[接入交换机]:::access
+        Acc33_1 --> AP33((无线 AP))
+        Acc33_2 --> PC33[终端 PC]
+    end
+
+    %% 34F
+    subgraph F34 [34F]
+        AC34[AC] -.- Agg34[汇聚交换机]
+        Agg34 --> Acc34_1[接入交换机]:::access
+        Agg34 --> Acc34_2[接入交换机]:::access
+        Acc34_1 --> AP34((无线 AP))
+        Acc34_2 --> PC34[终端 PC]
+    end
+
+    %% 核心到汇聚的物理链路
+    Core ==> Agg3
+    Core ==> Agg16
+    Core ==> Agg17
+    Core ==> Agg33
+    Core ==> Agg34
+```
 ### 一、WireGuard Server 基础配置
 #### 1、安装EPEL仓库
 ```bash
