@@ -1,0 +1,24 @@
+### Huawei VRP 5系 SNMPv3配置
+
+sys
+acl number 3991
+ rule 5 permit ip source 10.0.0.0 0.0.255.255
+ rule 10 permit ip source 10.101.0.0 0.0.255.255
+quit
+
+snmp-agent
+snmp-agent sys-info version v3
+snmp-agent group v3 read privacy read-view isoview write-view isoview acl 3991
+snmp-agent mib-view included isoview iso
+snmp-agent usm-user v3 zabbix
+snmp-agent usm-user v3 zabbix group read
+snmp-agent usm-user v3 zabbix authentication-mode sha
+Huawei@123
+Huawei@123
+snmp-agent usm-user v3 zabbix privacy-mode aes128
+HuaWei@123
+HuaWei@123
+quit
+sa
+y
+y
