@@ -1,0 +1,82 @@
+# NAC配置--VRP 5系列交换机
+# 强烈建议使用统一模式部署NAC功能！！！
+
+dhcp enable
+dhcp snooping enable
+arp snooping enable
+
+# 适用于用户MAC地址固定，但用户接入位置频繁变动的场景
+arp snooping anti-attack entry-check fixed-mac enable
+
+
+# 将NAC配置模式切换成统一模式 (切换模式会重启设备)
+authentication unified-mode 
+
+# 配置MAC接入模板
+mac-access-profile name m1						
+quit
+
+# 配置802.1x接入模板
+dot1x-access-profile name d1 				
+quit
+
+# 配置认证模板
+authentication-profile name {}				
+ dot1x-access-profile d1
+
+# 绑定802.1X接入模板
+ mac-access-profile name m1		  
+ 
+# 使能MAC旁路认证功能。
+ authentication dot1x-mac-bypass    				
+ quit
+ 
+# 接口绑定认证模板
+interface GigabitEthernet0/0/1						
+ authentication-profile {}
+ quit
+ 
+# 创建并配置RADIUS服务器模板“nac“（NAC设备<——>Radius服务器)	
+radius-server template {}							
+ radius-server shared-key cipher {}
+ radius-server authentication {} 1812 source ip-address {} weight 90
+ radius-server authentication {} 1812 source ip-address {}  weight 80
+ radius-server accounting {} 1813 source ip-address {} weight 90
+ radius-server accounting {} 1813 source ip-address {} weight 80
+ radius-attribute nas-ip {}							
+
+radius-server template {}
+ radius-server shared-key cipher {}
+ radius-server authentication {} 1812 source ip-address {} weight 80
+ radius-server retransmit 2 timeout 3
+ undo radius-server user-name domain-included
+ radius-server attribute translate
+ radius-attribute disable Login-Service receive
+ quit
+
+# 创建AAA认证方案“nac”并配置认证方式为RADIUS。
+aaa
+ authentication-scheme {}							
+   authentication-mode radius local
+   quit
+   
+# 创建认证域“nac”，并在其上绑定AAA认证方案“nac”与RADIUS服务器模板“nac”。
+ domain {}										
+   authentication-scheme {}
+   accounting-scheme default
+   radius-server nac
+   quit
+ service-scheme {}					
+   admin-user privilege level 15
+   quit
+ domain {}
+   authentication-scheme {}   
+   accounting-scheme default
+   service-scheme {}
+   radius-server {}
+   quit
+
+# 全局使能nac
+domain {} 										  
+domain {} admin
+
