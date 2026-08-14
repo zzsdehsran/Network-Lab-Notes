@@ -29,7 +29,7 @@ def download_and_save_ips(url, filepath):
 
         # 2. 直接在内存中按行拆分数据
         raw_data_lines = response.text.strip().splitlines()
-        print(f"获取成功，共 {len(raw_data_lines)}跳数据。正在转换格式并写入文件...：")
+        print(f"获取成功，共 {len(raw_data_lines)}条数据。正在转换格式并写入文件...：")
 
         # 3. 打开文件准备写入 （边转换、边存列表、边写文件）
         with open(filepath, 'w', encoding='utf-8') as f:
